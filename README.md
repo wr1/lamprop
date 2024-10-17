@@ -75,6 +75,38 @@ And the following generic fibers;
 You can use them in your lamprop files without having to define them.
 Redefinitions of these names in your lamprop file will be ignored.
 
+## Library use
+Lamprop can be used as a library, in the following manner. 
+```python
+import numpy as np
+import lamprop as lp
+
+resin = lp.resin(2900, 0.25, 40e-6, 1.15, "resin")
+
+fiber = lp.fiber(70000, 0.33, 5e-6, 2.54, "fiber")
+
+angles = [-45, 45, 90, 0, 0, 0, 0, 90, 45, -45]
+
+laminate = lp.laminate(
+    "laminate", [lp.lamina(fiber, resin, 150, a, 0.55) for a in angles]
+)
+
+with np.printoptions(precision=3, suppress=True):
+    print(np.array(laminate.ABD))
+    print(np.array(laminate.Ex))
+```
+Produces
+
+```
+[[27518.858  6349.355     0.        0.        0.        0.   ]
+ [ 6349.355 20985.603     0.        0.        0.        0.   ]
+ [    0.        0.     7397.674     0.        0.        0.   ]
+ [    0.        0.        0.     1905.321   896.624  -150.643]
+ [    0.        0.        0.      896.624  2181.5    -150.643]
+ [    0.        0.        0.     -150.643  -150.643   997.341]]
+```
+
+
 ## Requirements
 
 This program requires at least Python 3.6. It is *not* compatible with
@@ -92,7 +124,7 @@ invoked from the root directory of the repository.
 
 To install it for the local user, run:
 
-    python setup.py install
+    pip install . 
 
 This will install it in the user path for Python scripts. For POSIX
 operating systems this is ususally `~/.local/bin`. For ms-windows this
