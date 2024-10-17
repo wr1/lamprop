@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "lamprop"
+version = "0.1.0"
+description = "Implementation of CLT and micromechanics to create laminate properties (for use in FEA)."
+authors = ['R.F. Smith']
+license = "LICENSE.txt"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+lamprop = "lamprop.console:main"
+lamprop_gui = "lamprop.gui:main"
