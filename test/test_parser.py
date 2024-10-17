@@ -11,7 +11,7 @@ import sys
 
 sys.path.insert(1, ".")
 
-from lp.parser import (
+from lamprop.parser import (
     _get_numbers,
     _get_components,
     _directives,
@@ -19,8 +19,8 @@ from lp.parser import (
     _get_lamina,
     _extended,
 )  # noqa
-from lp.core import fiber, resin, lamina  # noqa
-from lp.generic import resins as generic_resins, fibers as generic_fibers  # noqa
+from lamprop.core import fiber, resin, lamina  # noqa
+from lamprop.generic import resins as generic_resins, fibers as generic_fibers  # noqa
 
 
 def test_directives():  # {{{1

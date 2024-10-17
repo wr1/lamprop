@@ -64,7 +64,7 @@ def main():
     group.add_argument(
         "-L", "--license", action=LicenseAction, nargs=0, help="print the license"
     )
-    group.add_argument("-v", "--version", action="version", version=lp.__version__)
+    group.add_argument("-v", "--version", action="version", version=lamprop.__version__)
     opts.add_argument(
         "--log",
         default="warning",

@@ -6,14 +6,14 @@
 # Last modified: 2023-10-11T22:25:10+0200
 """Test for lamprop types"""
 
-import sys
+# import sys
 import math
 
 # Inserting the path is needed to make sure that the module here is loaded,
 # not an installed version!
-sys.path.insert(1, ".")
+# sys.path.insert(1, ".")
 
-from lp.core import fiber, resin, lamina, laminate  # noqa
+from lamprop.core import fiber, resin, lamina, laminate  # noqa
 
 hf = fiber(233000, 0.2, -0.54e-6, 1.76, "Hyer's carbon fiber")
 hr = resin(4620, 0.36, 41.4e-6, 1.1, "Hyer's resin")

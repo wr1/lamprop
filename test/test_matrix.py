@@ -6,7 +6,7 @@
 # Last modified: 2020-12-26T14:09:32+0100
 """Test of the matrix routines"""
 
-import lp.matrix as mat
+import lamprop.matrix as mat
 
 _rndm = [
     [0.21, 0.76, 0.07, 0.94, 0.33, 0.57],
