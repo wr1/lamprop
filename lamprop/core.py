@@ -82,9 +82,9 @@ The following references were used in coding this module:
   number =       {Reference Publication 1351}
 }
 """
-from lp.types import Fiber, Resin, Lamina, Laminate
+from lamprop.types import Fiber, Resin, Lamina, Laminate
 import math
-import lp.matrix as lpm
+import lamprop.matrix as lpm
 
 
 def fiber(E1, ν12, α1, ρ, name):

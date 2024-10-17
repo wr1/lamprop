@@ -8,7 +8,7 @@
 """LaTeX output routines for lamprop."""
 
 from .version import __version__
-from lp.text import _fea as _fea_text
+from lamprop.text import _fea as _fea_text
 
 
 def out(lam, eng, mat, fea):  # {{{1

@@ -16,7 +16,7 @@ from tkinter import ttk
 from tkinter.font import nametofont
 from tkinter.scrolledtext import ScrolledText
 from tkinter import filedialog
-import lp
+import lamprop
 
 
 class LampropUI(tk.Tk):
@@ -162,7 +162,7 @@ class LampropUI(tk.Tk):
 
     def do_reload(self):
         """Reload the laminates."""
-        laminates = lp.parse(self.lamfile.get())
+        laminates = lamprop.parse(self.lamfile.get())
         if not laminates:
             return
         self.file_menu.entryconfigure("Text export", state="disabled")
@@ -176,7 +176,7 @@ class LampropUI(tk.Tk):
         self.file_menu.entryconfigure("Text export", state="normal")
         self.file_menu.entryconfigure("HTML export", state="normal")
         self.file_menu.entryconfigure("Info", state="normal")
-        if lp.warn:
+        if lamprop.warn:
             self.file_menu.entryconfigure("Warnings", state="normal")
             self.show_warnings()
 
@@ -184,7 +184,7 @@ class LampropUI(tk.Tk):
         """Generate text output."""
         name = self.cxlam.get()
         text = "\n".join(
-            lp.text.out(
+            lamprop.text.out(
                 self.laminates[name],
                 bool(self.engprop.get()),
                 bool(self.matrices.get()),
@@ -230,7 +230,7 @@ class LampropUI(tk.Tk):
             return
         name = self.cxlam.get()
         html = "\n".join(
-            lp.html.out(
+            lamprop.html.out(
                 self.laminates[name],
                 bool(self.engprop.get()),
                 bool(self.matrices.get()),
@@ -254,16 +254,16 @@ class LampropUI(tk.Tk):
 
     def show_license(self):
         """Display license"""
-        message(self, lp.__license__, title="License", height=25)
+        message(self, lamprop.__license__, title="License", height=25)
 
     def show_info(self):
         """Display parser information"""
-        text = "\n".join(lp.info)
+        text = "\n".join(lamprop.info)
         message(self, text, f"Information for {self.lamfile.get()}")
 
     def show_warnings(self):
         """Display parser warnings"""
-        text = "\n".join(lp.warn)
+        text = "\n".join(lamprop.warn)
         message(self, text, f"Warnings for {self.lamfile.get()}")
 
 
@@ -282,7 +282,7 @@ def message(parent, msg, title="Message", width=80, height=10):
     ok.grid(row=1, column=0)
 
 
-if __name__ == "__main__":
+def main():
     if os.name == "posix":
         if os.fork():
             sys.exit()
@@ -293,5 +293,9 @@ if __name__ == "__main__":
             "w",
         )
     root = LampropUI(None)
-    root.wm_title("Lamprop GUI v" + lp.__version__)
+    root.wm_title("Lamprop GUI v" + lamprop.__version__)
     root.mainloop()
+
+
+if __name__ == "__main__":
+    main()

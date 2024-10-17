@@ -7,7 +7,7 @@
 """Text output routines for lamprop."""
 
 from .version import __version__
-import lp.core as core
+import lamprop.core as core
 
 # Data
 
