@@ -1,0 +1,23 @@
+fibers:
+  - E1: 70000
+    nu12: 0.33
+    alpha1: 5e-6
+    rho: 2.54
+    name: "e-glas"
+resins:
+  - E: 2900
+    nu: 0.25
+    alpha: 40e-6
+    rho: 1.15
+    name: "EPR04908"
+laminates:
+  - name: "EPR04908-interglas91745"
+    resin: "EPR04908"
+    vf: 0.45
+    layers:
+      - fiber: "e-glas"
+        weight: 146
+        angle: 0
+      - fiber: "e-glas"
+        weight: 140
+        angle: 90

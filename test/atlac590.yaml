@@ -1,0 +1,27 @@
+fibers:
+  - E1: 70000
+    nu12: 0.33
+    alpha1: 5e-6
+    rho: 2.54
+    name: "e-glas"
+resins:
+  - E: 3500
+    nu: 0.36
+    alpha: 51.5e-6
+    rho: 1.1
+    name: "atlac-590"
+laminates:
+  - name: "atlac590-M710"
+    resin: "atlac-590"
+    vf: 0.183
+    layers:
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+    symmetric: true
