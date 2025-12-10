@@ -1,0 +1,61 @@
+fibers:
+  - E1: 233000
+    nu12: 0.2
+    alpha1: -0.54e-6
+    rho: 1.76
+    name: "foo"
+  - E1: 233000
+    nu12: 0.2
+    alpha1: -0.54e-6
+    rho: 1.76
+    name: "foo"
+resins:
+  - E: 4620
+    nu: 0.36
+    alpha: 41.4e-6
+    rho: 1.1
+    name: "Hyer's resin"
+laminates:
+  - name: "unknown_fiber"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - fiber: "foo"
+        weight: 100
+        angle: 0
+      - fiber: "bar"
+        weight: 100
+        angle: 90
+  - name: "unknown_resin"
+    resin: "spam"
+    vf: 0.5
+    layers:
+      - fiber: "bar"
+        weight: 100
+        angle: 0
+      - fiber: "bar"
+        weight: 100
+        angle: 90
+    symmetric: true
+  - name: "empty"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers: []
+  - name: "noname1"
+    vf: 0.5
+    layers:
+      - fiber: "foo"
+        weight: 100
+        angle: 0
+      - fiber: "foo"
+        weight: 100
+        angle: 90
+  - name: "noname2"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - weight: 100
+        angle: 0
+      - fiber: "foo"
+        weight: 100
+        angle: 90

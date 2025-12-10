@@ -1,7 +1,7 @@
 *.pyc
 __pycache__
 *~
-lamprop
+# lamprop
 lamprop.pyz
 lamprop-gui
 lamprop-gui.pyw

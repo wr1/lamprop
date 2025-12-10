@@ -1,0 +1,29 @@
+fibers:
+  - E1: 230000
+    nu12: 0.27
+    alpha1: -0.38e-6
+    rho: 1.80
+    name: "generic-carbon"
+resins:
+  - E: 4000
+    nu: 0.36
+    alpha: 40e-6
+    rho: 1.20
+    name: "generic-epoxy"
+laminates:
+  - name: "generic plain carbon/epoxy"
+    resin: "generic-epoxy"
+    vf: 0.5
+    layers:
+      - fiber: "generic-carbon"
+        weight: 100
+        angle: 0
+      - fiber: "generic-carbon"
+        weight: 100
+        angle: 90
+      - fiber: "generic-carbon"
+        weight: 100
+        angle: 90
+      - fiber: "generic-carbon"
+        weight: 100
+        angle: 0

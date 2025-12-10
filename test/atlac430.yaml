@@ -1,0 +1,70 @@
+fibers:
+  - E1: 70000
+    nu12: 0.33
+    alpha1: 5e-6
+    rho: 2.54
+    name: "e-glas"
+resins:
+  - E: 3600
+    nu: 0.36
+    alpha: 60e-6
+    rho: 1.145
+    name: "atlac-430"
+laminates:
+  - name: "atlac430-CSM450"
+    resin: "atlac-430"
+    vf: 0.22
+    layers:
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+  - name: "atlac430-combi"
+    resin: "atlac-430"
+    vf: 0.22
+    layers:
+      - fiber: "e-glas"
+        weight: 150
+        angle: 0
+      - fiber: "e-glas"
+        weight: 150
+        angle: 60
+      - fiber: "e-glas"
+        weight: 150
+        angle: -60
+      - fiber: "e-glas"
+        weight: 600
+        angle: 0
+    symmetric: true

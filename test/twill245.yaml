@@ -1,0 +1,34 @@
+fibers:
+  - E1: 230000
+    nu12: 0.20
+    alpha1: -0.41e-6
+    rho: 1.76
+    name: "T300"
+resins:
+  - E: 2900
+    nu: 0.36
+    alpha: 41.4e-6
+    rho: 1.15
+    name: "Epikote04908"
+laminates:
+  - name: "twill245"
+    resin: "Epikote04908"
+    vf: 0.56
+    layers:
+      - fiber: "T300"
+        weight: 122.5
+        angle: 0
+      - fiber: "T300"
+        weight: 122.5
+        angle: 90
+  - name: "twill245-symmetric"
+    resin: "Epikote04908"
+    vf: 0.56
+    layers:
+      - fiber: "T300"
+        weight: 122.5
+        angle: 0
+      - fiber: "T300"
+        weight: 122.5
+        angle: 90
+    symmetric: true

@@ -1,0 +1,68 @@
+fibers:
+  - E1: 233000
+    nu12: 0.2
+    alpha1: -0.54e-6
+    rho: 1.76
+    name: "Hyer's carbon fiber"
+resins:
+  - E: 4620
+    nu: 0.36
+    alpha: 41.4e-6
+    rho: 1.1
+    name: "Hyer's resin"
+laminates:
+  - name: "unidirectional laminate"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+  - name: "[0/90]s laminate"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 90
+    symmetric: true
+  - name: "[+45/-45]s laminate"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 45
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: -45
+    symmetric: true
+  - name: "quasi isotropic laminate"
+    resin: "Hyer's resin"
+    vf: 0.5
+    layers:
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 0
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 90
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: 45
+      - fiber: "Hyer's carbon fiber"
+        weight: 100
+        angle: -45
+    symmetric: true
