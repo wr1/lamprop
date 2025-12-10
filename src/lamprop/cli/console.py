@@ -1,94 +1,148 @@
+#!/usr/bin/env python3
 """Console CLI for lamprop."""
-import argparse
-import logging
 import os
 import sys
+from loguru import logger
+from rich.console import Console
+from treeparse import cli, command, argument, option
 from ..io.parser import parse, info, warn
 from ..io.text import text_output
 
+console = Console()
+
+def process_files(files, eng, mat, fea):
+    """Process the files and output results."""
+    logger.add(sys.stderr, level="INFO")
+    out = text_output
+    for f in files:
+        logger.info("processing file '{}'".format(f))
+        laminates = parse(f)
+        if warn:
+            console.print(f'[red]Warnings for "{f}":[/red]')
+            for ln in warn:
+                console.print(ln)
+            console.print()
+        if not laminates:
+            console.print(f"No laminates found in '{f}'.")
+            continue
+        for curlam in laminates:
+            for line in out(curlam, eng, mat, fea):
+                console.print(line)
+
+def eng_callback(files):
+    """Output engineering properties."""
+    process_files(files, True, False, False)
+
+def mat_callback(files):
+    """Output ABD matrix and stiffness tensor."""
+    process_files(files, False, True, False)
+
+def fea_callback(files, output=None):
+    """Output material data for FEA."""
+    logger.add(sys.stderr, level="INFO")
+    out = text_output
+    all_lines = []
+    for f in files:
+        logger.info("processing file '{}'".format(f))
+        laminates = parse(f)
+        if warn:
+            if output:
+                all_lines.extend([f'** Warnings for "{f}":'] + [f'** {w}' for w in warn] + ['**'])
+            else:
+                console.print(f'[red]Warnings for "{f}":[/red]')
+                for ln in warn:
+                    console.print(ln)
+                console.print()
+        if not laminates:
+            if output:
+                all_lines.append(f"** No laminates found in '{f}'.")
+            else:
+                console.print(f"No laminates found in '{f}'.")
+            continue
+        for curlam in laminates:
+            lines = out(curlam, False, False, True)
+            all_lines.extend(lines)
+    if output:
+        with open(output, 'w', encoding='utf-8') as file:
+            file.write('\n'.join(all_lines) + '\n')
+    else:
+        for line in all_lines:
+            console.print(line)
+
+def tex_callback(files):
+    """Generate LaTeX output."""
+    console.print("LaTeX output not implemented, falling back to text.")
+    process_files(files, True, True, True)
+
+def info_callback(files):
+    """Show information about source files."""
+    logger.add(sys.stderr, level="INFO")
+    for f in files:
+        logger.info("processing file '{}'".format(f))
+        laminates = parse(f)
+        if info and info:
+            console.print(f'Information for "{f}":')
+            for ln in info:
+                console.print(ln)
+            console.print()
+        if warn:
+            console.print(f'[red]Warnings for "{f}":[/red]')
+            for ln in warn:
+                console.print(ln)
+            console.print()
+        if not laminates:
+            console.print(f"No laminates found in '{f}'.")
+
+app = cli(
+    name="lamprop",
+    help="Calculate the elastic properties of a fibrous composite laminate. See the manual (lamprop-manual.pdf) for more in-depth information.",
+    commands=[
+        command(
+            name="eng",
+            help="Output only the engineering properties",
+            callback=eng_callback,
+            arguments=[
+                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+            ],
+        ),
+        command(
+            name="mat",
+            help="Output only the ABD matrix and stiffness tensor",
+            callback=mat_callback,
+            arguments=[
+                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+            ],
+        ),
+        command(
+            name="fea",
+            help="Output only material data for FEA",
+            callback=fea_callback,
+            arguments=[
+                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+            ],
+            options=[
+                option(flags=["--output", "-o"], arg_type=str, help="output file for FEA data"),
+            ],
+        ),
+        command(
+            name="tex",
+            help="Generate LaTeX output",
+            callback=tex_callback,
+            arguments=[
+                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+            ],
+        ),
+        command(
+            name="info",
+            help="Show information about source files",
+            callback=info_callback,
+            arguments=[
+                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+            ],
+        ),
+    ],
+)
+
 def main():
     """Entry point for lamprop console application."""
-    doc = (
-        "Calculate the elastic properties of a fibrous composite laminate. "
-        "See the manual (lamprop-manual.pdf) for more in-depth information."
-    )
-    opts = argparse.ArgumentParser(prog="lamprop", description=doc)
-    group = opts.add_mutually_exclusive_group()
-    group.add_argument(
-        "-i",
-        "--info",
-        action="store_true",
-        help="show information about source file (the default is not to)",
-    )
-    group.add_argument(
-        "-l",
-        "--latex",
-        action="store_true",
-        help="generate LaTeX output (the default is plain text)",
-    )
-    group.add_argument("-H", "--html", action="store_true", help="generate HTML output")
-    opts.add_argument(
-        "-e",
-        "--eng",
-        action="store_true",
-        help="output only the engineering properties",
-    )
-    opts.add_argument(
-        "-m",
-        "--mat",
-        action="store_true",
-        help="output only the ABD matrix and stiffness tensor",
-    )
-    opts.add_argument(
-        "-f", "--fea", action="store_true", help="output only material data for FEA"
-    )
-    group = opts.add_mutually_exclusive_group()
-    group.add_argument(
-        "-L", "--license", action="store_true", help="print the license"
-    )
-    group.add_argument("-v", "--version", action="version", version=__import__('lamprop').__version__)
-    opts.add_argument(
-        "--log",
-        default="warning",
-        choices=["debug", "info", "warning", "error"],
-        help="logging level (defaults to 'warning')",
-    )
-    opts.add_argument(
-        "files", metavar="file", nargs="*", help="one or more files to process"
-    )
-    args = opts.parse_args(sys.argv[1:])
-    logging.basicConfig(
-        level=getattr(logging, args.log.upper(), None),
-        format="%(levelname)s: %(message)s",
-    )
-    del opts, group
-    if args.mat is False and args.eng is False and args.fea is False:
-        args.eng = True
-        args.mat = True
-        args.fea = True
-    if len(args.files) == 0:
-        sys.exit(1)
-    out = text_output
-    if args.latex:
-        # Since we removed latex, fall back to text
-        out = text_output
-    elif args.html:
-        # Since we removed html, fall back to text
-        out = text_output
-    if os.name == "nt":
-        sys.stdout.reconfigure(encoding="utf-8")
-    for f in args.files:
-        logging.info("processing file '{}'".format(f))
-        laminates = parse(f)
-        if args.info and info:
-            print(f'Information for "{f}":')
-            for ln in info:
-                print(ln)
-            print()
-        if warn:
-            print(f'Warnings for "{f}":')
-            for ln in warn:
-                print(ln)
-            print()
-        for curlam in laminates:
-            print(*out(curlam, args.eng, args.mat, args.fea), sep="\n")
+    app.run()
