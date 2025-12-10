@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Console CLI for lamprop."""
+
 import sys
 
 from loguru import logger
@@ -10,6 +11,7 @@ from lamprop.io.parser import info, parse, warn
 from lamprop.io.text import text_output
 
 console = Console()
+
 
 def process_files(files, *, eng, mat, fea):
     """Process the files and output results."""
@@ -30,13 +32,16 @@ def process_files(files, *, eng, mat, fea):
             for line in out(curlam, eng=eng, mat=mat, fea=fea):
                 console.print(line)
 
+
 def eng_callback(files):
     """Output engineering properties."""
     process_files(files, eng=True, mat=False, fea=False)
 
+
 def mat_callback(files):
     """Output ABD matrix and stiffness tensor."""
     process_files(files, eng=False, mat=True, fea=False)
+
 
 def fea_callback(files, output=None):
     """Output material data for FEA."""
@@ -48,7 +53,9 @@ def fea_callback(files, output=None):
         laminates = parse(f)
         if warn:
             if output:
-                all_lines.extend([f'** Warnings for "{f}":'] + [f"** {w}" for w in warn] + ["**"])
+                all_lines.extend(
+                    [f'** Warnings for "{f}":'] + [f"** {w}" for w in warn] + ["**"]
+                )
             else:
                 console.print(f'[red]Warnings for "{f}":[/red]')
                 for ln in warn:
@@ -65,15 +72,18 @@ def fea_callback(files, output=None):
             all_lines.extend(lines)
     if output:
         from pathlib import Path
+
         Path(output).write_text("\n".join(all_lines) + "\n", encoding="utf-8")
     else:
         for line in all_lines:
             console.print(line)
 
+
 def tex_callback(files):
     """Generate LaTeX output."""
     console.print("LaTeX output not implemented, falling back to text.")
     process_files(files, eng=True, mat=True, fea=True)
+
 
 def info_callback(files):
     """Show information about source files."""
@@ -94,6 +104,7 @@ def info_callback(files):
         if not laminates:
             console.print(f"No laminates found in '{f}'.")
 
+
 app = cli(
     name="lamprop",
     help="Calculate the elastic properties of a fibrous composite laminate. See the manual (lamprop-manual.pdf) for more in-depth information.",
@@ -103,7 +114,12 @@ app = cli(
             help="Output only the engineering properties",
             callback=eng_callback,
             arguments=[
-                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+                argument(
+                    name="files",
+                    nargs="+",
+                    arg_type=str,
+                    help="one or more files to process",
+                )
             ],
         ),
         command(
@@ -111,7 +127,12 @@ app = cli(
             help="Output only the ABD matrix and stiffness tensor",
             callback=mat_callback,
             arguments=[
-                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+                argument(
+                    name="files",
+                    nargs="+",
+                    arg_type=str,
+                    help="one or more files to process",
+                )
             ],
         ),
         command(
@@ -119,10 +140,19 @@ app = cli(
             help="Output only material data for FEA",
             callback=fea_callback,
             arguments=[
-                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+                argument(
+                    name="files",
+                    nargs="+",
+                    arg_type=str,
+                    help="one or more files to process",
+                )
             ],
             options=[
-                option(flags=["--output", "-o"], arg_type=str, help="output file for FEA data"),
+                option(
+                    flags=["--output", "-o"],
+                    arg_type=str,
+                    help="output file for FEA data",
+                ),
             ],
         ),
         command(
@@ -130,7 +160,12 @@ app = cli(
             help="Generate LaTeX output",
             callback=tex_callback,
             arguments=[
-                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+                argument(
+                    name="files",
+                    nargs="+",
+                    arg_type=str,
+                    help="one or more files to process",
+                )
             ],
         ),
         command(
@@ -138,11 +173,17 @@ app = cli(
             help="Show information about source files",
             callback=info_callback,
             arguments=[
-                argument(name="files", nargs="+", arg_type=str, help="one or more files to process")
+                argument(
+                    name="files",
+                    nargs="+",
+                    arg_type=str,
+                    help="one or more files to process",
+                )
             ],
         ),
     ],
 )
+
 
 def main():
     """Entry point for lamprop console application."""

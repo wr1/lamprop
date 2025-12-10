@@ -1,4 +1,5 @@
 """Create a material database from lamprop test files."""
+
 import argparse
 import json
 import sys
@@ -14,7 +15,12 @@ from lamprop import fiber, lamina, laminate, resin
 def main():
     """Main function to create material database."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("lp_testdir", nargs="?", default="test", help="directory where the lamprop test files are")
+    parser.add_argument(
+        "lp_testdir",
+        nargs="?",
+        default="test",
+        help="directory where the lamprop test files are",
+    )
     parser.add_argument("--output", default="__matdb.json")
     args = parser.parse_args()
 
@@ -93,9 +99,7 @@ def main():
                         laminae[(fb, rs, fiber_weight, ang, vf)] for ang in stacks[s]
                     ]
                     try:
-                        lam = laminate(
-                            f"{s}_{fb}_{rs}_{int(100 * vf)}", this_stack
-                        )
+                        lam = laminate(f"{s}_{fb}_{rs}_{int(100 * vf)}", this_stack)
                         all_laminates[lam.name] = todict(lam)
                     except (ValueError, TypeError, ZeroDivisionError):
                         pass

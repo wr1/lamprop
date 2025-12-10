@@ -1,4 +1,5 @@
 """Compare output to reference output."""
+
 from lamprop.io.parser import parse
 from lamprop.io.text import text_output
 

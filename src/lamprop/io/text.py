@@ -1,4 +1,5 @@
 """Text output routines for lamprop."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -35,6 +36,7 @@ def text_output(lam, *, eng=True, mat=True, fea=True) -> list[str]:
     lines.append("**")
     return lines
 
+
 def _engprop(lam) -> list[str]:
     """Return engineering properties as text."""
     lines = ["In-plane engineering properties:"]
@@ -45,12 +47,17 @@ def _engprop(lam) -> list[str]:
         f"alpha_x = {lam.alpha_x:9.4g} K⁻¹, alpha_y = {lam.alpha_y:9.4g} K⁻¹",
     ]
     lines.append("Engineering properties derived from 3D stiffness matrix:")
-    lines.append(f"E_x = {lam.tEx:.0f} MPa, E_y = {lam.tEy:.0f} MPa, E_z = {lam.tEz:.0f} MPa")
+    lines.append(
+        f"E_x = {lam.tEx:.0f} MPa, E_y = {lam.tEy:.0f} MPa, E_z = {lam.tEz:.0f} MPa"
+    )
     lines.append(
         f"G_xy = {lam.tGxy:.0f} MPa, G_xz = {lam.tGxz:.0f} MPa, G_yz = {lam.tGyz:.0f} MPa"
     )
-    lines.append(f"nu_xy = {lam.t_nu_xy:.3f}, nu_xz = {lam.t_nu_xz:.3f}, nu_yz = {lam.t_nu_yz:.3f}")
+    lines.append(
+        f"nu_xy = {lam.t_nu_xy:.3f}, nu_xz = {lam.t_nu_xz:.3f}, nu_yz = {lam.t_nu_yz:.3f}"
+    )
     return lines
+
 
 def _matrices(lam) -> list[str]:
     """Return matrices as text using pandas."""
@@ -66,6 +73,7 @@ def _matrices(lam) -> list[str]:
     lines += df_c.to_string().split("\n")
     return lines
 
+
 def _fea(lam) -> list[str]:
     """Return FEA material data."""
     lines = ["** Material data for CalculiX / Abaqus (SI units):"]
@@ -74,27 +82,26 @@ def _fea(lam) -> list[str]:
     if is_ortho(lam.C):
         lines.append("*ELASTIC,TYPE=ORTHO")
         lines.append(
-            f"{D[0,0]:.4g},{D[0,1]:.4g},{D[1,1]:.4g},"
-            f"{D[0,2]:.4g},{D[1,2]:.4g},{D[2,2]:.4g},"
-            f"{D[3,3]:.4g},{D[4,4]:.4g},"
+            f"{D[0, 0]:.4g},{D[0, 1]:.4g},{D[1, 1]:.4g},"
+            f"{D[0, 2]:.4g},{D[1, 2]:.4g},{D[2, 2]:.4g},"
+            f"{D[3, 3]:.4g},{D[4, 4]:.4g},"
         )
-        lines.append(f"{D[5,5]:.4g},293")
+        lines.append(f"{D[5, 5]:.4g},293")
     else:
         lines.append("*ELASTIC,TYPE=ANISO")
         lines.append(
-            f"{D[0,0]:.4g},{D[0,1]:.4g},{D[1,1]:.4g},"
-            f"{D[0,2]:.4g},{D[1,2]:.4g},{D[2,2]:.4g},"
-            f"{D[0,3]:.4g},{D[1,3]:.4g},"
+            f"{D[0, 0]:.4g},{D[0, 1]:.4g},{D[1, 1]:.4g},"
+            f"{D[0, 2]:.4g},{D[1, 2]:.4g},{D[2, 2]:.4g},"
+            f"{D[0, 3]:.4g},{D[1, 3]:.4g},"
         )
         lines.append(
-            f"{D[2,3]:.4g},{D[3,3]:.4g},{D[0,4]:.4g},"
-            f"{D[1,4]:.4g},{D[2,4]:.4g},{D[3,4]:.4g},"
-            f"{D[4,4]:.4g},{D[0,5]:.4g},"
+            f"{D[2, 3]:.4g},{D[3, 3]:.4g},{D[0, 4]:.4g},"
+            f"{D[1, 4]:.4g},{D[2, 4]:.4g},{D[3, 4]:.4g},"
+            f"{D[4, 4]:.4g},{D[0, 5]:.4g},"
         )
         lines.append(
-            f"{D[1,5]:.4g},{D[2,5]:.4g},{D[3,5]:.4g},"
-            f"{D[4,5]:.4g},{D[5,5]:.4g},293"
+            f"{D[1, 5]:.4g},{D[2, 5]:.4g},{D[3, 5]:.4g},{D[4, 5]:.4g},{D[5, 5]:.4g},293"
         )
     lines.append("*DENSITY")
-    lines.append(f"{lam.rho*1000:.0f}")
+    lines.append(f"{lam.rho * 1000:.0f}")
     return lines

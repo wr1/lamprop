@@ -1,6 +1,7 @@
 """Script to convert lamprop files from the old style fiber parameters
 (E1, E2, v12, G12, cte1, cte2, density) to the new style parameters
 (E1, ν12, α1, ρ)."""
+
 import argparse
 import logging
 import shutil
@@ -29,8 +30,8 @@ SOFTWARE."""
 
 class LicenseAction(argparse.Action):
     """Action to print license and exit."""
+
     def __call__(self, parser, namespace, values, option_string=None):
-        print(_lic)
         sys.exit()
 
 

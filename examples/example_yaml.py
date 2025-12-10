@@ -13,7 +13,11 @@ from rich.table import Table
 from lamprop import parse
 
 parser = argparse.ArgumentParser(description="Load and display laminates from YAML.")
-parser.add_argument("yaml_file", nargs="?", help="Path to the YAML file (optional, runs all if not provided)")
+parser.add_argument(
+    "yaml_file",
+    nargs="?",
+    help="Path to the YAML file (optional, runs all if not provided)",
+)
 args = parser.parse_args()
 
 console = Console()

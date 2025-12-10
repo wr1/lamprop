@@ -1,4 +1,5 @@
 """Parser for YAML lamprop files."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -15,6 +16,7 @@ from lamprop.generic import resins as generic_resins
 info: list[str] = []
 warn: list[str] = []
 
+
 def parse(filename: str) -> list[laminate]:
     """Parse a YAML lamprop file."""
     info.clear()
@@ -22,14 +24,19 @@ def parse(filename: str) -> list[laminate]:
     try:
         info.append(f'Reading file "{filename}".')
         from pathlib import Path
+
         data = yaml.safe_load(Path(filename).read_text(encoding="utf-8")) or {}
     except Exception as e:
         warn.append(f'Cannot read "{filename}": {e}')
         return []
     fdict = _get_components(data.get("fibers", []), Fiber)
-    info.append(f"Found {len(fdict)} fibers, including {len(generic_fibers)} generic fibers.")
+    info.append(
+        f"Found {len(fdict)} fibers, including {len(generic_fibers)} generic fibers."
+    )
     rdict = _get_components(data.get("resins", []), Resin)
-    info.append(f"Found {len(rdict)} resins, including {len(generic_resins)} generic resins.")
+    info.append(
+        f"Found {len(rdict)} resins, including {len(generic_resins)} generic resins."
+    )
     laminates = []
     for lam_data in data.get("laminates", []):
         lam = _laminate(lam_data, rdict, fdict)
@@ -37,6 +44,7 @@ def parse(filename: str) -> list[laminate]:
             laminates.append(lam)
     info.append(f"Found {len(laminates)} laminates")
     return laminates
+
 
 def _get_components(items: list[dict[str, Any]], model) -> dict[str, Any]:
     """Parse components from list of dicts."""
@@ -49,7 +57,10 @@ def _get_components(items: list[dict[str, Any]], model) -> dict[str, Any]:
             warn.append(f"Error parsing {model.__name__}: {e}")
     return rv
 
-def _laminate(lam_data: dict[str, Any], resins: dict[str, Resin], fibers: dict[str, Fiber]) -> laminate:
+
+def _laminate(
+    lam_data: dict[str, Any], resins: dict[str, Resin], fibers: dict[str, Fiber]
+) -> laminate:
     """Parse a laminate definition."""
     name = lam_data.get("name", "")
     if not name:
@@ -69,7 +80,13 @@ def _laminate(lam_data: dict[str, Any], resins: dict[str, Resin], fibers: dict[s
             if fiber_name not in fibers:
                 warn.append(f'Unknown fiber "{fiber_name}"')
                 continue
-            la = lamina(fibers[fiber_name], resins[resin_name], layer_data["weight"], layer_data["angle"], vf)
+            la = lamina(
+                fibers[fiber_name],
+                resins[resin_name],
+                layer_data["weight"],
+                layer_data["angle"],
+                vf,
+            )
             layers.append(la)
     if not layers:
         warn.append(f'Empty laminate "{name}"')
@@ -77,6 +94,7 @@ def _laminate(lam_data: dict[str, Any], resins: dict[str, Resin], fibers: dict[s
     if lam_data.get("symmetric", False):
         layers = _extend_symmetric(layers)
     return laminate(name, layers)
+
 
 def _extend_symmetric(original: list) -> list:
     """Create symmetric extension."""
