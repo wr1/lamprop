@@ -1,6 +1,6 @@
 [project]
 name = "lamprop"
-version = "2025.1.31"
+version = "2025.01.30"
 description = "Calculate the elastic properties of a fibrous composite laminate."
 authors = [
     {name = "R.F. Smith", email = "rsmith@xs4all.nl"}
@@ -16,6 +16,7 @@ dependencies = [
     "rich>=13.0",
     "treeparse>=0.1.0",
     "loguru>=0.7.0",
+    "pytest>=7.0",
 ]
 
 [project.scripts]
