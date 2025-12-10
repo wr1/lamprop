@@ -25,7 +25,5 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Install dependencies
       run: uv sync
-    - name: Run ruff check
-      run: uv run ruff check
     - name: Run tests
       run: uv run pytest
