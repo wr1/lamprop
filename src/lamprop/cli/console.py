@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """Console CLI for lamprop."""
-import os
 import sys
+
 from loguru import logger
 from rich.console import Console
-from treeparse import cli, command, argument, option
-from ..io.parser import parse, info, warn
-from ..io.text import text_output
+from treeparse import argument, cli, command, option
+
+from lamprop.io.parser import info, parse, warn
+from lamprop.io.text import text_output
 
 console = Console()
 
-def process_files(files, eng, mat, fea):
+def process_files(files, *, eng, mat, fea):
     """Process the files and output results."""
     logger.add(sys.stderr, level="INFO")
     out = text_output
     for f in files:
-        logger.info("processing file '{}'".format(f))
+        logger.info(f"processing file '{f}'")
         laminates = parse(f)
         if warn:
             console.print(f'[red]Warnings for "{f}":[/red]')
@@ -26,16 +27,16 @@ def process_files(files, eng, mat, fea):
             console.print(f"No laminates found in '{f}'.")
             continue
         for curlam in laminates:
-            for line in out(curlam, eng, mat, fea):
+            for line in out(curlam, eng=eng, mat=mat, fea=fea):
                 console.print(line)
 
 def eng_callback(files):
     """Output engineering properties."""
-    process_files(files, True, False, False)
+    process_files(files, eng=True, mat=False, fea=False)
 
 def mat_callback(files):
     """Output ABD matrix and stiffness tensor."""
-    process_files(files, False, True, False)
+    process_files(files, eng=False, mat=True, fea=False)
 
 def fea_callback(files, output=None):
     """Output material data for FEA."""
@@ -43,11 +44,11 @@ def fea_callback(files, output=None):
     out = text_output
     all_lines = []
     for f in files:
-        logger.info("processing file '{}'".format(f))
+        logger.info(f"processing file '{f}'")
         laminates = parse(f)
         if warn:
             if output:
-                all_lines.extend([f'** Warnings for "{f}":'] + [f'** {w}' for w in warn] + ['**'])
+                all_lines.extend([f'** Warnings for "{f}":'] + [f"** {w}" for w in warn] + ["**"])
             else:
                 console.print(f'[red]Warnings for "{f}":[/red]')
                 for ln in warn:
@@ -60,11 +61,11 @@ def fea_callback(files, output=None):
                 console.print(f"No laminates found in '{f}'.")
             continue
         for curlam in laminates:
-            lines = out(curlam, False, False, True)
+            lines = out(curlam, eng=False, mat=False, fea=True)
             all_lines.extend(lines)
     if output:
-        with open(output, 'w', encoding='utf-8') as file:
-            file.write('\n'.join(all_lines) + '\n')
+        from pathlib import Path
+        Path(output).write_text("\n".join(all_lines) + "\n", encoding="utf-8")
     else:
         for line in all_lines:
             console.print(line)
@@ -72,13 +73,13 @@ def fea_callback(files, output=None):
 def tex_callback(files):
     """Generate LaTeX output."""
     console.print("LaTeX output not implemented, falling back to text.")
-    process_files(files, True, True, True)
+    process_files(files, eng=True, mat=True, fea=True)
 
 def info_callback(files):
     """Show information about source files."""
     logger.add(sys.stderr, level="INFO")
     for f in files:
-        logger.info("processing file '{}'".format(f))
+        logger.info(f"processing file '{f}'")
         laminates = parse(f)
         if info and info:
             console.print(f'Information for "{f}":')

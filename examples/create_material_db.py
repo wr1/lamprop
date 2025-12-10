@@ -1,39 +1,43 @@
-#! /usr/bin/env python3
-
-import lp
-import glob
-import numpy as np
-import os
-import json
+"""Create a material database from lamprop test files."""
 import argparse
+import json
+import sys
+from pathlib import Path
+import numpy as np
 
-if __name__ == "__main__":
-    p = argparse.ArgumentParser()
-    p.add_argument("lp_testdir", help="directory where the lamprop test files are")
-    p.add_argument("--output", default="__matdb.json")
-    args = p.parse_args()
+sys.path.insert(0, "src")
 
-    lp_testdir = args.lp_testdir
+from lamprop import fiber, resin, lamina, laminate
 
-    lm = glob.glob(os.path.join(lp_testdir, "*lam"))
+
+def main():
+    """Main function to create material database."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("lp_testdir", nargs="?", default="test", help="directory where the lamprop test files are")
+    parser.add_argument("--output", default="__matdb.json")
+    args = parser.parse_args()
+
+    lp_testdir = Path(args.lp_testdir)
+
+    lm = list(lp_testdir.glob("*lam"))
 
     fibers = {}
     resins = {}
     for i in lm:
-        for j in open(i, "r").readlines():
-            if j.startswith("f:") or j.startswith("r:"):
+        for j in i.read_text().splitlines():
+            if j.startswith(("f:", "r:")):
                 try:
                     s = j.split()
                     sp = [float(j) for j in s[1:5]]
                     name = j.split(s[4])[-1].strip()
                     if j.startswith("f:"):
-                        fb = lp.fiber(sp[0], sp[1], sp[2], sp[3], name)
+                        fb = fiber(sp[0], sp[1], sp[2], sp[3], name)
                         fibers[name] = fb
                     elif j.startswith("r:"):
-                        rs = lp.resin(sp[0], sp[1], sp[2], sp[3], name)
+                        rs = resin(sp[0], sp[1], sp[2], sp[3], name)
                         resins[name] = rs
-                except:
-                    print("fail to parse %s" % j)
+                except (ValueError, IndexError):
+                    pass
 
     # check later if there should also be a loop over different ply thicknesses
     fiber_weight = 200.0
@@ -45,7 +49,7 @@ if __name__ == "__main__":
             for fb in fibers:
                 for rs in resins:
                     key = (fb, rs, fiber_weight, angle, vf)
-                    laminae[key] = lp.lamina(
+                    laminae[key] = lamina(
                         fibers[fb], resins[rs], fiber_weight, angle, vf
                     )
 
@@ -60,12 +64,21 @@ if __name__ == "__main__":
     }
 
     def todict(lam):
+        """Convert laminate to dict."""
         sub = vars(lam)
+        sub["ABD"] = sub["ABD"].tolist()
+        sub["abd"] = sub["abd"].tolist()
+        sub["H"] = sub["H"].tolist()
+        sub["h"] = sub["h"].tolist()
+        sub["C"] = sub["C"].tolist()
+        sub["S"] = sub["S"].tolist()
         sub["layers"] = [vars(i) for i in sub["layers"]]
         for i in range(len(sub["layers"])):
-            if type(sub["layers"][i]["resin"]) != type({}):
+            if hasattr(sub["layers"][i]["C"], "tolist"):
+                sub["layers"][i]["C"] = sub["layers"][i]["C"].tolist()
+            if not isinstance(sub["layers"][i]["resin"], dict):
                 sub["layers"][i]["resin"] = vars(sub["layers"][i]["resin"])
-            if type(sub["layers"][i]["fiber"]) != type({}):
+            if not isinstance(sub["layers"][i]["fiber"], dict):
                 sub["layers"][i]["fiber"] = vars(sub["layers"][i]["fiber"])
         return sub
 
@@ -79,11 +92,15 @@ if __name__ == "__main__":
                         laminae[(fb, rs, fiber_weight, ang, vf)] for ang in stacks[s]
                     ]
                     try:
-                        lam = lp.laminate(
-                            "%s_%s_%s_%i" % (s, fb, rs, 100 * vf), this_stack
+                        lam = laminate(
+                            f"{s}_{fb}_{rs}_{int(100 * vf)}", this_stack
                         )
                         all_laminates[lam.name] = todict(lam)
-                    except:
+                    except (ValueError, TypeError, ZeroDivisionError):
                         pass
 
-    json.dump(all_laminates, open(args.output, "w"), indent=4)
+    Path(args.output).write_text(json.dumps(all_laminates, indent=4))
+
+
+if __name__ == "__main__":
+    main()

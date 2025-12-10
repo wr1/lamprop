@@ -1,5 +1,4 @@
 # file: convert-lamprop.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Author: R.F. Smith <rsmith@xs4all.nl>
 # Created: 2017-04-16 10:38:30 +0200
@@ -11,8 +10,8 @@
 
 import argparse
 import logging
-import sys
 import shutil
+import sys
 
 _lic = """Copyright © 2017 R.F. Smith.
 
@@ -37,7 +36,6 @@ SOFTWARE."""
 
 class LicenseAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        print(_lic)
         sys.exit()
 
 
@@ -63,7 +61,7 @@ def oldstyle_fibers(lines):
 
 def changeline(ln):
     f, E1, _, v12, _, alpha1, _, rho, name = ln.split(maxsplit=8)
-    return " ".join([f, E1, v12, alpha1, rho, name])
+    return f"{f} {E1} {v12} {alpha1} {rho} {name}"
 
 
 def main(argv):
@@ -88,18 +86,19 @@ def main(argv):
     )
     for path in args.files:
         if path[-4:] != ".lam":
-            logging.error("{} is not a lamprop file; skipping".format(path))
+            logging.error(f"{path} is not a lamprop file; skipping")
             continue
         try:
             lines = readlines(path)
             if not lines:
-                raise IOError("empty file")
-        except (FileNotFoundError, IOError) as e:
-            logging.error("could not read {}: {}".format(path, e))
+                msg = "empty file"
+                raise OSError(msg)
+        except (OSError, FileNotFoundError) as e:
+            logging.exception(f"could not read {path}: {e}")
             continue
         oldidx = oldstyle_fibers(lines)
         if oldidx:
-            logging.info("found {} old style lines in {}".format(len(oldidx), path))
+            logging.info(f"found {len(oldidx)} old style lines in {path}")
             # Back up the file
             shutil.copyfile(path, path + ".orig")
             # Change the f-lines
@@ -109,7 +108,7 @@ def main(argv):
             with open(path, "w") as f:
                 f.writelines(lines)
         else:
-            logging.info("skipping {}; no old style lines".format(path))
+            logging.info(f"skipping {path}; no old style lines")
 
 
 if __name__ == "__main__":

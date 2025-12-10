@@ -1,13 +1,13 @@
 # file: test_core_resin.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Tests for resin model and creation function.
 
 import sys
+
 import pytest
 
 sys.path.insert(1, ".")
-from lamprop.core.resin import resin, Resin
+from lamprop.core.resin import resin
 
 
 def test_resin_creation():
@@ -29,6 +29,7 @@ def test_resin_validation():
     with pytest.raises(ValueError):
         resin(2900, 0.36, 41.4e-6, 1.15, "")  # empty name
 
+
 # From old test_parser.py
 def test_good_resins():
     """Test parsing good resins."""
@@ -42,14 +43,14 @@ def test_good_resins():
         (9, "r:  3500    0.36    51.5e-6   1.1   atlac 590"),
     ]
     for d in directives:
-        ln, line = d
+        _ln, line = d
         parts = line.split()
         if len(parts) >= 6:
             E = float(parts[1])
             nu = float(parts[2])
             alpha = float(parts[3])
             rho = float(parts[4])
-            name = ' '.join(parts[5:])
+            name = " ".join(parts[5:])
             r = resin(E, nu, alpha, rho, name)
             assert r.name == name
             for other in directives:
@@ -67,7 +68,7 @@ def test_bad_resins():
         (4, "r: 4620 0.2 41.4e-6 1.1"),  # no name
     ]
     for d in bad_directives:
-        ln, line = d
+        _ln, line = d
         parts = line.split()
         if len(parts) < 6:
             continue
@@ -76,8 +77,9 @@ def test_bad_resins():
             nu = float(parts[2])
             alpha = float(parts[3])
             rho = float(parts[4])
-            name = ' '.join(parts[5:]) if len(parts) > 5 else ""
+            name = " ".join(parts[5:]) if len(parts) > 5 else ""
             resin(E, nu, alpha, rho, name)
-            assert False, f"Should have failed for {line}"
+            msg = f"Should have failed for {line}"
+            raise AssertionError(msg)
         except (ValueError, AssertionError):
             pass

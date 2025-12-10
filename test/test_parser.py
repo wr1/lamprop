@@ -1,31 +1,28 @@
 # file: test_parser.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Tests for YAML parser.
 
 import sys
-import io
 
 sys.path.insert(1, ".")
+from lamprop.core.fiber import fiber
+from lamprop.core.lamina import lamina
+from lamprop.core.resin import resin
 from lamprop.io.parser import (
     parse,
 )
-from lamprop.core.fiber import fiber
-from lamprop.core.resin import resin
-from lamprop.core.lamina import lamina
-from lamprop.generic import resins as generic_resins, fibers as generic_fibers
+
 
 # Old tests adapted
 def test_directives():
     """Test parsing directives (old, may not apply)."""
     # Skip or adapt
-    pass
 
 
 def test_numbers():
     """Test getting numbers (old)."""
     # Skip
-    pass
+
 
 # test_good_fibers moved to test_core_fiber.py
 # test_bad_fibers moved
@@ -48,7 +45,8 @@ def test_extended1():
     # Since _extended is internal, test the logic
     extended = layers + layers[::-1]
     assert len(extended) == 10
-    assert isinstance(extended[0], str) and extended[0] == "UD 300"
+    assert isinstance(extended[0], str)
+    assert extended[0] == "UD 300"
     # Fix assertion: extended[5] is the reverse of layers[4] which is lamina
     assert isinstance(extended[5], type(layers[4]))
 
@@ -67,7 +65,8 @@ def test_extended2():
     ]
     extended = layers[:-1] + layers[:-1][::-1]  # Simplified
     assert len(extended) == 10
-    assert isinstance(extended[0], str) and extended[0] == "UD 300"
+    assert isinstance(extended[0], str)
+    assert extended[0] == "UD 300"
     # Fix
     assert isinstance(extended[5], type(layers[4]))
 
@@ -86,7 +85,8 @@ def test_extended3():
     extended = layers[:-1] + layers[:-1][::-1]
     assert len(extended) == 8
     # Fix
-    assert isinstance(extended[1], str) and extended[1] == "pw 200 45"
+    assert isinstance(extended[1], str)
+    assert extended[1] == "pw 200 45"
     assert isinstance(extended[4], type(layers[0]))
 
 

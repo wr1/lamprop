@@ -1,17 +1,20 @@
 """Laminate model and creation function."""
-import math
+from __future__ import annotations
+
 import numpy as np
-from typing import List, Union
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
 from .lamina import Lamina
 from .utils import clean
 
+
 class Laminate(BaseModel):
     """Represents a laminate."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str = Field(..., min_length=1)
-    layers: List[Union[Lamina, str]]
+    layers: list[Lamina | str]
     thickness: float
     fiber_weight: float
     rho: float
@@ -44,7 +47,8 @@ class Laminate(BaseModel):
     t_nu_xz: float
     t_nu_yz: float
 
-def laminate(name: str, layers: List[Union[Lamina, str]]) -> Laminate:
+
+def laminate(name: str, layers: list[Lamina | str]) -> Laminate:
     """Create a Laminate."""
     orig_layers = layers
     layers = [la for la in layers if isinstance(la, Lamina)]
@@ -106,9 +110,15 @@ def laminate(name: str, layers: List[Union[Lamina, str]]) -> Laminate:
         ABD[5, 3] += la.Q16_bar * z3
         ABD[5, 4] += la.Q26_bar * z3
         ABD[5, 5] += la.Q66_bar * z3
-        Ntx += (la.Q11_bar * la.alpha_x + la.Q12_bar * la.alpha_y + la.Q16_bar * la.alpha_xy) * la.thickness
-        Nty += (la.Q12_bar * la.alpha_x + la.Q22_bar * la.alpha_y + la.Q26_bar * la.alpha_xy) * la.thickness
-        Ntxy += (la.Q16_bar * la.alpha_x + la.Q26_bar * la.alpha_y + la.Q66_bar * la.alpha_xy) * la.thickness
+        Ntx += (
+            la.Q11_bar * la.alpha_x + la.Q12_bar * la.alpha_y + la.Q16_bar * la.alpha_xy
+        ) * la.thickness
+        Nty += (
+            la.Q12_bar * la.alpha_x + la.Q22_bar * la.alpha_y + la.Q26_bar * la.alpha_xy
+        ) * la.thickness
+        Ntxy += (
+            la.Q16_bar * la.alpha_x + la.Q26_bar * la.alpha_y + la.Q66_bar * la.alpha_xy
+        ) * la.thickness
         sb = 5 / 4 * (la.thickness - 4 * z3 / thickness**2)
         H[0, 0] += la.Q44_bar_s * sb
         H[0, 1] += la.Q45_bar_s * sb
@@ -137,7 +147,11 @@ def laminate(name: str, layers: List[Union[Lamina, str]]) -> Laminate:
     alpha_y = abd[1, 0] * Ntx + abd[1, 1] * Nty + abd[1, 2] * Ntxy
     tEx, tEy, tEz = 1 / S[0, 0], 1 / S[1, 1], 1 / S[2, 2]
     tGxy, tGxz, tGyz = 1 / S[5, 5], 1 / S[4, 4], 1 / S[3, 3]
-    t_nu_xy, t_nu_xz, t_nu_yz = -S[1, 0] / S[0, 0], -S[2, 0] / S[0, 0], -S[2, 1] / S[1, 1]
+    t_nu_xy, t_nu_xz, t_nu_yz = (
+        -S[1, 0] / S[0, 0],
+        -S[2, 0] / S[0, 0],
+        -S[2, 1] / S[1, 1],
+    )
     return Laminate(
         name=name,
         layers=orig_layers,

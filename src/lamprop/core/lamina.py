@@ -1,13 +1,18 @@
 """Lamina model and creation function."""
+
 import math
+
 import numpy as np
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
 from .fiber import Fiber
 from .resin import Resin
 from .utils import tbar
 
+
 class Lamina(BaseModel):
     """Represents a lamina layer."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     fiber: Fiber
@@ -41,7 +46,10 @@ class Lamina(BaseModel):
     rho: float
     C: np.ndarray
 
-def lamina(fiber: Fiber, resin: Resin, fiber_weight: float, angle: float, vf: float) -> Lamina:
+
+def lamina(
+    fiber: Fiber, resin: Resin, fiber_weight: float, angle: float, vf: float
+) -> Lamina:
     """Create a Lamina of unidirectional fibers in resin."""
     vm = 1.0 - vf
     fiber_thickness = fiber_weight / (fiber.rho * 1000)

@@ -1,16 +1,15 @@
 # file: test_core_laminate.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Tests for laminate model and creation function.
 
-import sys
 import math
+import sys
 
 sys.path.insert(1, ".")
 from lamprop.core.fiber import fiber
-from lamprop.core.resin import resin
 from lamprop.core.lamina import lamina
 from lamprop.core.laminate import laminate
+from lamprop.core.resin import resin
 
 hf = fiber(233000, 0.2, -0.54e-6, 1.76, "Hyer's carbon fiber")
 hr = resin(4620, 0.36, 41.4e-6, 1.1, "Hyer's resin")

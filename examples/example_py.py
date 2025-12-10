@@ -1,12 +1,13 @@
-#!/usr/bin/env python3
 """Example of using lamprop programmatically in Python."""
 
 import sys
+
 sys.path.insert(0, "src")
 
-from lamprop import fiber, resin, lamina, laminate
 from rich.console import Console
 from rich.table import Table
+
+from lamprop import fiber, lamina, laminate, resin
 
 # Create fiber and resin
 fiber_obj = fiber(E1=230000, nu12=0.27, alpha1=-0.38e-6, rho=1.80, name="Carbon")

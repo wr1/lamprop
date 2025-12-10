@@ -1,15 +1,16 @@
-#!/usr/bin/env python3
 """Example of loading laminate from YAML and printing with rich."""
 
 import sys
+
 sys.path.insert(0, "src")
 
 import argparse
-import glob
+from pathlib import Path
 
-from lamprop import parse
 from rich.console import Console
 from rich.table import Table
+
+from lamprop import parse
 
 parser = argparse.ArgumentParser(description="Load and display laminates from YAML.")
 parser.add_argument("yaml_file", nargs="?", help="Path to the YAML file (optional, runs all if not provided)")
@@ -20,7 +21,7 @@ console = Console()
 if args.yaml_file:
     yaml_files = [args.yaml_file]
 else:
-    yaml_files = glob.glob("test/*.yaml")
+    yaml_files = [str(p) for p in Path("test").glob("*.yaml")]
 
 for yaml_file in yaml_files:
     console.print(f"\nProcessing {yaml_file}")

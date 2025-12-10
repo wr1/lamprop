@@ -1,15 +1,14 @@
 # file: test_core_lamina.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Tests for lamina model and creation function.
 
-import sys
 import math
+import sys
 
 sys.path.insert(1, ".")
 from lamprop.core.fiber import fiber
-from lamprop.core.resin import resin
 from lamprop.core.lamina import lamina
+from lamprop.core.resin import resin
 
 hf = fiber(233000, 0.2, -0.54e-6, 1.76, "Hyer's carbon fiber")
 hr = resin(4620, 0.36, 41.4e-6, 1.1, "Hyer's resin")
@@ -34,6 +33,7 @@ def test_lamina():
         (117517.65, 3235.30, 0.0, 9803.95, 0.0, 3198.53),
     )
 
+
 # From old test_parser.py
 def test_good_lamina():
     """Test good lamina."""
@@ -50,17 +50,17 @@ def test_good_lamina():
     r = resin(3000, 0.3, 20e-6, 1.2, "resin")
     layers = []
     for d in directives:
-        ln, line = d
+        _ln, line = d
         parts = line.split()
         if len(parts) >= 4:
             weight = float(parts[1])
             angle = float(parts[2])
             try:
                 vf = float(parts[3])
-                fname = ' '.join(parts[4:])
+                fname = " ".join(parts[4:])
             except ValueError:
                 vf = 0.5
-                fname = ' '.join(parts[3:])
+                fname = " ".join(parts[3:])
             if fname in fdict:
                 la = lamina(fdict[fname], r, weight, angle, vf)
                 layers.append(la)

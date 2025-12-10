@@ -1,13 +1,13 @@
 # file: test_core_fiber.py
-# vim:fileencoding=utf-8:ft=python
 #
 # Tests for fiber model and creation function.
 
 import sys
+
 import pytest
 
 sys.path.insert(1, ".")
-from lamprop.core.fiber import fiber, Fiber
+from lamprop.core.fiber import fiber
 
 
 def test_fiber_creation():
@@ -28,6 +28,7 @@ def test_fiber_validation():
         fiber(230000, 0.30, -0.41e-6, -1.76, "T300")  # rho <= 0
     with pytest.raises(ValueError):
         fiber(230000, 0.30, -0.41e-6, 1.76, "")  # empty name
+
 
 # From old test_parser.py
 def test_good_fibers():
@@ -54,14 +55,14 @@ def test_good_fibers():
     ]
     # Since parser changed, adapt to create fibers directly
     for d in directives:
-        ln, line = d
+        _ln, line = d
         parts = line.split()
         if len(parts) >= 6:
             E1 = float(parts[1])
             nu12 = float(parts[2])
             alpha1 = float(parts[3])
             rho = float(parts[4])
-            name = ' '.join(parts[5:])
+            name = " ".join(parts[5:])
             f = fiber(E1, nu12, alpha1, rho, name)
             assert f.name == name
 
@@ -75,7 +76,7 @@ def test_bad_fibers():
         (4, "f:  240000  0.25    -0.12e-6    1.78"),  # no name
     ]
     for d in bad_directives:
-        ln, line = d
+        _ln, line = d
         parts = line.split()
         if len(parts) < 6:
             continue
@@ -84,8 +85,9 @@ def test_bad_fibers():
             nu12 = float(parts[2])
             alpha1 = float(parts[3])
             rho = float(parts[4])
-            name = ' '.join(parts[5:]) if len(parts) > 5 else ""
+            name = " ".join(parts[5:]) if len(parts) > 5 else ""
             fiber(E1, nu12, alpha1, rho, name)
-            assert False, f"Should have failed for {line}"
+            msg = f"Should have failed for {line}"
+            raise AssertionError(msg)
         except (ValueError, AssertionError):
             pass
