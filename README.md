@@ -1,9 +1,6 @@
-=====================================================
-Calculating elastic properties of composite laminates
-=====================================================
+# Calculating elastic properties of composite laminates
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
+![code style](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 The purpose of this program is to calculate some properties of
 fiber-reinforced composite laminates. It calculates
@@ -45,9 +42,7 @@ invocations in a shell from the root directory of the repository.  Use
 ``python src/console.py -h`` for the console version, and ``python
 src/gui.py`` for the GUI version.
 
-
-Of note
--------
+## Of note
 
 As of version 3 (2017-02-25), support for old style fiber properties (which
 also specified properties in the radial direction of the fiber) has been
@@ -78,27 +73,21 @@ And the following generic fibers;
 You can use them in your lamprop files without having to define them.
 Redefinitions of these names in your lamprop file will be ignored.
 
-
-Requirements
-------------
+## Requirements
 
 This program requires at least Python 3.6. It is *not* compatible with Python 2!
 It has no library requirments outside of the Python standard library.
 Development and testing is currently done using Python 3.11.
 
-
-Developers
-++++++++++
+## Developers
 
 You will need py.test_ to run the provided tests. Code checks are done using
 pylama_. Both should be invoked from the root directory of the repository.
 
-.. _py.test: https://docs.pytest.org/
-.. _pylama: http://pylama.readthedocs.io/en/latest/
+[py.test](https://docs.pytest.org/)
+[pylama](http://pylama.readthedocs.io/en/latest/)
 
-
-Installation
-------------
+## Installation
 
 To install it for the local user, run::
 
@@ -111,34 +100,30 @@ For ms-windows this is the ``Scripts`` directory of your Python installation
 or another local directory.
 Make sure that this directory is in your ``$PATH`` environment variable.
 
-
-Vim
-+++
+## Vim
 
 In the ``tools`` subdirectory you will find a vim_ syntax file for lamprop
 files. If you want to use it, copy ``lamprop.vim`` to ``~/.vim/syntax``, and
 set the filetype of your lamprop files to ``lamprop``.
 
-.. _vim: http://www.vim.org
+[vim](http://www.vim.org)
 
 You can set the filetype by adding a modeline to your lamprop files:
 
-.. code-block:: vim
-
-    vim:ft=lamprop
+```vim
+vim:ft=lamprop
+```
 
 This requires that modeline support is enabled. You should have the following
 line in your ``vimrc``:
 
-.. code-block:: vim
-
-    set modeline
+```vim
+set modeline
+```
 
 Alternatively, if you use the ``.lam`` extension for your lamprop files you
 can use an autocommand in your ``vimrc``;
 
-.. code-block:: vim
-
-    autocmd BufNewFile,BufRead *.lam set filetype=lamprop
-
-
+```vim
+autocmd BufNewFile,BufRead *.lam set filetype=lamprop
+```
