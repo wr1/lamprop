@@ -3,11 +3,12 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
 import numpy as np
 
 sys.path.insert(0, "src")
 
-from lamprop import fiber, resin, lamina, laminate
+from lamprop import fiber, lamina, laminate, resin
 
 
 def main():
